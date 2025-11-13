@@ -1,0 +1,77 @@
+{
+    // FILES
+    "files.autoSave": "afterDelay",
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": false,
+
+    // EDITOR
+    "editor.guides.bracketPairs": "active",
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.smoothScrolling": true,
+    "editor.wordWrap": "on",
+    "editor.insertSpaces": false,
+    "editor.tabSize": 4,
+    "editor.rulers": [80],
+    "editor.lineNumbers": "on",
+    "editor.renderWhitespace": "selection",
+    "editor.detectIndentation": false,
+    "editor.inlayHints.enabled": "off",
+    "editor.minimap.enabled": false,
+
+    // LANGUAGE-SPECIFIC
+    "[cpp]": {
+        "editor.formatOnSave": true
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[c]": {
+        "editor.wordBasedSuggestions": "off",
+        "editor.suggest.insertMode": "replace",
+        "editor.semanticHighlighting.enabled": true
+    },
+    "[svelte]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-lang",
+        "editor.insertSpaces": false,
+        "editor.detectIndentation": false
+    },
+
+    // WORKBENCH / UI
+    "workbench.colorTheme": "GitHub Dark Default",
+    "workbench.editorAssociations": {
+        ".csv": "default"
+    },
+    "security.workspace.trust.untrustedFiles": "open",
+
+    // GIT & GITHUB
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    "github.copilot.enable": {
+        // "c++": true
+    },
+
+    // OTHER
+    "go.toolsManagement.autoUpdate": true,
+    "scss.format.braceStyle": "expand",
+    "svelte.enable-ts-plugin": true,
+    "sherlock.userId": "59c42001-323a-455a-9606-a343ece7e878",
+    "pylint.args": [
+        "--generated-members=cv2."
+    ],
+
+    // NORMINETTE EXTENSION
+    "codam-norminette-3.command": "norminette",
+    "codam-norminette-3.commandTimeoutMs": 10000,
+    "codam-norminette-3.fileregex": "\\.[ch]$",
+    "codam-norminette-3.ignoreErrors": [],
+    "codam-norminette-3.highlight-color": "rgba(255, 0, 0, 0.2)",
+    "codam-norminette-3.displayErrorName": false
+}

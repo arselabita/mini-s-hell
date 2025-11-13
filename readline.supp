@@ -1,0 +1,30 @@
+{
+   readline_library_leaks
+   Memcheck:Leak
+   ...
+   obj:*/libreadline.so.*
+   obj:*/libreadline.so.*
+   obj:*/libreadline.so.*
+}
+{
+   tinfo_library_leaks
+   Memcheck:Leak
+   ...
+   obj:*/libtinfo.so.*
+   obj:*/libtinfo.so.*
+   obj:*/libtinfo.so.*
+}
+{
+   readline_reachable_leaks
+   Memcheck:Leak
+   fun:malloc
+   obj:*/libreadline.so.*
+   obj:*/libreadline.so.*
+}
+{
+   tinfo_reachable_leaks
+   Memcheck:Leak
+   fun:malloc
+   obj:*/libtinfo.so.*
+   obj:*/libtinfo.so.*
+}
