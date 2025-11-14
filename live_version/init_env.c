@@ -78,15 +78,12 @@ int	loop_envp(t_data *data, char **envp)
 			data->flag.last_cmd = true;
 		i++;
 	}
-	printf("\nVOR COUNT:%i\n", i);
-
 	if (!data->flag.shlvl)
 		i++;
 	if (!data->flag.pwd)
 		i++;
 	if (!data->flag.last_cmd)
 		i++;
-	printf("\nNACH COUNT:%i\n", i);
 	return (i);
 }
 //copies enviroment from envp to data->env[i]
