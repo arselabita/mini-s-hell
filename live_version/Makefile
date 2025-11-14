@@ -12,7 +12,8 @@ CFLAGS  	:= -Wall -Wextra -Werror -MMD -MP
 LDFLAGS 	:= -lreadline
 DEBUG_FLAGS := -g -DVERBOSE=1
 
-##VALGRIND := valgrind --leak-check=full --show-leak-kinds=all --suppressions=../readline.supp
+##VALGRIND := 
+#valgrind --leak-check=full --show-leak-kinds=all --suppressions=../readline.supp
 
 # =========================
 # Libft
@@ -30,14 +31,14 @@ MAIN_SOURCE_BONUS := main_bonus.c
 
 # Mandatory sources
 SOURCES_CORE    := \
-	update_env.c \
+	init_env.c \
+	cleanup.c \
+	verbose.c \
 	utils.c \
-
-
 
 # Bonus-only sources
 SOURCES_BONUSONLY := \
-	main.c
+	main_bonus.c
 
 ##BONUS FILES
 

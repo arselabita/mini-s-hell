@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: netrunner <netrunner@student.42.fr>        +#+  +:+       +#+        */
+/*   By: pjelinek <pjelinek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 13:06:18 by netrunner         #+#    #+#             */
-/*   Updated: 2025/11/13 14:22:46 by netrunner        ###   ########.fr       */
+/*   Updated: 2025/11/13 21:13:11 by pjelinek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void	handler(int sig)
 void	init_signals(void)
 {
 	struct sigaction	sa;
+
 	sa.sa_handler = handler;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
@@ -41,23 +42,23 @@ void	init_signals(void)
 //main
 int	main(int ac, char **av, char **envp)
 {
+	char	*prompt;
 	char	*line;
 	t_data	data;
 
-	memset(&data, 0, sizeof(t_data));
 	(void) av;
-	(void) ac;
-	(void) envp;
-	char	*prompt;
-
+	if (ac != 1)
+		return (0);
+	memset(&data, 0, sizeof(t_data));
 	prompt = "\001\033[1;32m\002❯ \001\033[1;37m\002minishell\001\033[0m\002 ▸ $ ";
+	if (!init_env(envp, &data))
+		return (cleanup(&data), 0);
 	while (1)
 	{
 		init_signals();
-		update_env(envp, &data);
 		line = readline(prompt);
 		if (!line) // NULL → Ctrl+D pressed (EOF)
-			return (printf("exit\n"), free_split(data.env), 0);
+			return (printf("exit\n"), cleanup(&data), 0);
 		if (*line) // not empty input
 		{
 			if (*line != SPACE)
@@ -70,6 +71,6 @@ int	main(int ac, char **av, char **envp)
 		}
 		free(line);
 	}
-	free_split(data.env);
+	cleanup(&data);
 	return (0);
 }
