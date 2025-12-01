@@ -6,13 +6,15 @@
 /*   By: pjelinek <pjelinek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 19:49:20 by pjelinek          #+#    #+#             */
-/*   Updated: 2025/11/19 22:12:39 by pjelinek         ###   ########.fr       */
+/*   Updated: 2025/12/01 04:33:28 by pjelinek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "minishell.h"
 
-static void	free_split(char **split)
+
+
+void	free_split(char **split)
 {
 	size_t	i;
 
@@ -24,10 +26,76 @@ static void	free_split(char **split)
 	free(split);
 }
 
-void	cleanup(t_data *data)
+void	redirs_lstclear(t_redirs **lst)
 {
-	if (data->env)
+	t_redirs	*redirs;
+	t_redirs	*next;
+
+	if (!lst || !*lst)
+		return ;
+	redirs = *lst;
+	while (redirs)
+	{
+		next = redirs->next;
+		free(redirs->filename);
+		free(redirs);
+		redirs = next;
+	}
+	*lst = NULL;
+}
+
+void	cmd_lstclear(t_cmds **lst)
+{
+	t_cmds	*cmd;
+	t_cmds	*next;
+
+	if (!lst || !*lst)
+		return;
+	cmd = *lst;
+	while (cmd)
+	{
+		next = cmd->next;
+		free_split(cmd->argv);
+		redirs_lstclear(&cmd->redirs);
+		free(cmd);
+		cmd = next;
+	}
+	*lst = NULL;
+}
+
+void	cleanup(t_data *data, int exit_code)
+{
+	t_cmds *cmd = data->cmd;
+	if (data->env && exit_code != RESET)
+	{
 		free_split(data->env);
-	if (data->path_list)
+		data->env = NULL;
+	}
+	if (data->path_list && exit_code != RESET)
+	{
 		free_split(data->path_list);
+		data->path_list = NULL;
+	}
+	if (cmd)
+	{
+		cmd_lstclear(&cmd);
+		ft_memset(&data->cmd, 0, sizeof(t_cmds));
+	}
+	if (data->heredoc.files)
+	{
+		int i = 0;
+		while (i < data->heredoc.count)
+		{
+			unlink(data->heredoc.files[i++]);
+			printf("HEREDOC FILE %s DELETED\n", data->heredoc.files[i - 1]);
+		}
+		free_split(data->heredoc.files);
+		ft_memset(&data->heredoc, 0, sizeof(t_heredoc));
+
+	}
+	ft_memset(&data->fd, -1, sizeof(t_fds));
+	ft_memset(&data->list, 0, sizeof(t_list));
+	if (exit_code == RESET)
+		return ;
+	exit(exit_code); ///// fuer debbuging
 }

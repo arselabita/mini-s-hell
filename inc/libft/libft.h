@@ -6,7 +6,7 @@
 /*   By: pjelinek <pjelinek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 11:23:20 by pjelinek          #+#    #+#             */
-/*   Updated: 2025/08/29 13:42:28 by pjelinek         ###   ########.fr       */
+/*   Updated: 2025/11/21 23:38:53 by pjelinek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <stdint.h>
 # include <stdbool.h>
+# include "gnl/get_next_line.h"
 
 typedef struct s_list
 {

@@ -2,6 +2,7 @@ NAME        = minishell
 CC          = cc
 CFLAGS      = -Wall -Werror -Wextra
 DEBUG_FLAGS = -g -DVERBOSE=1
+ALLOC_FLAG =  -g -DDEBUG_ALLOC
 
 LIBFT_DIR   = inc/libft
 LIBFT       = $(LIBFT_DIR)/libft.a
@@ -14,6 +15,7 @@ OBJ_DIR     = obj
 
 SRCS = \
 	main.c \
+	signals.c \
 	cleanup.c \
 	init_env.c \
 	utils.c \
@@ -22,6 +24,10 @@ SRCS = \
 	executor/single_exec.c \
 	executor/child_cleanup.c \
 	executor/redirections.c \
+	executor/input.c \
+	executor/multi_exec.c \
+	executor/heredoc.c \
+
 
 
 
@@ -35,8 +41,11 @@ OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 all: $(LIBFT) $(NAME)
 
 # Debug-Build: CFLAGS erweitern und komplett neu bauen
-debug: CFLAGS += $(DEBUG_FLAGS)
-debug: re
+verbose: CFLAGS += $(DEBUG_FLAGS)
+verbose: re
+
+alloc: CFLAGS += $(ALLOC_FLAGS)
+alloc: re
 
 # Objektdateien
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c inc/minishell.h

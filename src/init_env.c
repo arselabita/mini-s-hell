@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+	/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   init_env.c                                         :+:      :+:    :+:   */
@@ -6,11 +6,11 @@
 /*   By: pjelinek <pjelinek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:34:45 by pjelinek          #+#    #+#             */
-/*   Updated: 2025/11/19 22:12:45 by pjelinek         ###   ########.fr       */
+/*   Updated: 2025/11/27 22:44:52 by pjelinek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "minishell.h"
 
 static char	*increment_shlvl(char *str)
 {
@@ -32,13 +32,15 @@ static char	*increment_shlvl(char *str)
 		return (free(level), NULL);
 	free(level);
 	if (VERBOSE)
-		printf("SHLVL\n\n%s\n", shlvl);
+		fprintf(stderr, "SHLVL\n\n%s\n", shlvl);
 	return (shlvl);
 }
 
 // add SHLVL, PWD, _= to environment if they have been removed by command env -u SHLVL
 static bool	add_env(t_data *data, int i)
 {
+	char *str;
+
 	if (!data->flag.shlvl)
 	{
 		data->env[i] = ft_strdup("SHLVL=1");
@@ -48,9 +50,10 @@ static bool	add_env(t_data *data, int i)
 	}
 	if (!data->flag.pwd)
 	{
-		data->env[i] = ft_strjoin("PWD=", getcwd(NULL, 0));
+		str = getcwd(NULL, 0);
+		data->env[i] = ft_strjoin("PWD=", str);
 		if (!data->env[i])
-			return (false);
+			return (free(str), false);
 		i++;
 	}
 	if (!data->flag.last_cmd)
@@ -62,7 +65,7 @@ static bool	add_env(t_data *data, int i)
 	return (true);
 }
 
-//counts envp for allocation and checks SHLVL, PWD, and _=
+//counts envp for allocation and checks if SHLVL, PWD, and _= existis and if not it counts i for later allocation!
 int	loop_envp(t_data *data, char **envp)
 {
 	int	i;
@@ -122,13 +125,19 @@ static bool	extract_env(t_data *data, char **envp)
 static bool	create_env(t_data *data)
 {
 	char	**env;
+	char	*str;
+
 
 	env = NULL;
-	data->env = ft_calloc(6, sizeof(char *));
+	data->env = ft_calloc(4, sizeof(char *));
 	if (!data->env)
 		return (false);
 	env = data->env;
-	env[PWD] = ft_strjoin("PWD=", getcwd(NULL, 0));
+	str = getcwd(NULL, 0);
+	if (!str)
+		return (false);
+	env[PWD] = ft_strjoin("PWD=", str);
+	free(str);
 	if (!env[PWD])
 		return (false);
 	env[SHLVL] = ft_strdup("SHLVL=1");

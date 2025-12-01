@@ -3,19 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   landing_file.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: netrunner <netrunner@student.42.fr>        +#+  +:+       +#+        */
+/*   By: pjelinek <pjelinek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 22:12:31 by pjelinek          #+#    #+#             */
-/*   Updated: 2025/11/23 23:59:53 by netrunner        ###   ########.fr       */
+/*   Updated: 2025/11/27 16:15:02 by pjelinek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	multiple_cmds(void)
-{
-	return ;
-}
 // static void	built_in_execution(t_data *data)
 // {
 // 	if (VERBOSE)
@@ -47,20 +43,7 @@ void	multiple_cmds(void)
 
 
 
-// void	executor(t_cmds *cmd, t_data *data)
-// // void	executor(char *line, t_data *data)
-// {
-
-// 	/* 	if (data->list.size == 1 && builtin(data->cmd.argv))
-// 		built_in_execution(data); */
-// 	if (data->list.size == 1)
-// 		single_cmd(data, cmd);
-// 	else
-// 		multiple_cmds();
-// }
-
-
-void	debug_executor(t_cmds *cmd, t_data *data)
+void	executor(t_cmds *cmd, t_data *data)
 // void	executor(char *line, t_data *data)
 {
 
@@ -69,5 +52,5 @@ void	debug_executor(t_cmds *cmd, t_data *data)
 	if (data->list.size == 1)
 		single_cmd(data, cmd);
 	else
-		multiple_cmds();
+		multi_cmds(data, cmd);
 }

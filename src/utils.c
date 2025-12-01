@@ -6,11 +6,11 @@
 /*   By: pjelinek <pjelinek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:56:09 by netrunner         #+#    #+#             */
-/*   Updated: 2025/11/13 23:22:01 by pjelinek         ###   ########.fr       */
+/*   Updated: 2025/12/01 04:33:36 by pjelinek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "minishell.h"
 
 static int	ft_check_set(char const *set, char const c)
 {
