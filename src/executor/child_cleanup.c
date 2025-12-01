@@ -6,7 +6,7 @@
 /*   By: pjelinek <pjelinek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/20 19:38:45 by pjelinek          #+#    #+#             */
-/*   Updated: 2025/12/01 04:23:12 by pjelinek         ###   ########.fr       */
+/*   Updated: 2025/12/01 17:34:24 by pjelinek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,8 @@ void	handle_errno(t_data *data, t_cmds *cmd, int error_code)
 		|| error_code == ELOOP || error_code == ETXTBSY
 		|| error_code == ENAMETOOLONG || error_code == EINVAL)
 		child_cleanup(126, NULL, data, cmd);
-	else if (/* error_code == ENOMEN ||  */error_code == EMFILE
-		|| error_code == ENFILE || error_code == E2BIG
-		|| error_code == EFAULT)
+	else if (error_code == EMFILE || error_code == ENFILE
+		|| error_code == E2BIG	|| error_code == EFAULT)
 		child_cleanup(1, NULL, data, cmd);
 }
 

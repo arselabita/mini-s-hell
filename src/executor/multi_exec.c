@@ -6,7 +6,7 @@
 /*   By: pjelinek <pjelinek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 16:13:33 by pjelinek          #+#    #+#             */
-/*   Updated: 2025/12/01 04:12:01 by pjelinek         ###   ########.fr       */
+/*   Updated: 2025/12/01 16:26:37 by pjelinek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	ft_close(t_data *data)
 		close(data->fd.curr[0]);
 	if (data->fd.curr[1] >= 0)
 		close(data->fd.curr[1]);
+	ft_memset(&data->fd, -1, sizeof(t_fds));
 	return ;
 }
 
@@ -99,6 +100,7 @@ static void	parent_process(t_data *data, t_cmds *cmd, int loop)
 		data->fd.prev[0] = data->fd.curr[0];
 		data->fd.prev[1] = data->fd.curr[1];
 	}
+	ft_memset(&data->fd.curr, -1, sizeof(data->fd.curr));
 }
 
 void	multi_cmds(t_data *data, t_cmds *cmd)
@@ -111,7 +113,7 @@ void	multi_cmds(t_data *data, t_cmds *cmd)
 	if (pipe(data->fd.prev) < 0)
 		child_cleanup(1, "open pipe fd.prev failed\n", data, cmd);
 	i = -1;
-	while (cmd)
+	while (i < data->list.size - 1)
 	{
 		i++;
 		//init_signals(); /// RIGHT POS HERE ???

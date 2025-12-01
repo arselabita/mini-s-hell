@@ -6,7 +6,7 @@
 /*   By: pjelinek <pjelinek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 19:49:20 by pjelinek          #+#    #+#             */
-/*   Updated: 2025/12/01 04:33:28 by pjelinek         ###   ########.fr       */
+/*   Updated: 2025/12/01 16:47:57 by pjelinek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	cleanup(t_data *data, int exit_code)
 		while (i < data->heredoc.count)
 		{
 			unlink(data->heredoc.files[i++]);
-			printf("HEREDOC FILE %s DELETED\n", data->heredoc.files[i - 1]);
+			fprintf(stderr, "HEREDOC FILE %s DELETED\n", data->heredoc.files[i - 1]);
 		}
 		free_split(data->heredoc.files);
 		ft_memset(&data->heredoc, 0, sizeof(t_heredoc));

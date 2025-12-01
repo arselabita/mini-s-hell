@@ -6,14 +6,14 @@
 /*   By: pjelinek <pjelinek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 04:14:17 by pjelinek          #+#    #+#             */
-/*   Updated: 2025/12/01 05:13:57 by pjelinek         ###   ########.fr       */
+/*   Updated: 2025/12/01 18:35:45 by pjelinek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /* ======================================================== */
-/*   Redirect-Typ aus User-Input (< > << >>) bestimmen      */
+/*   Determine redirect type from user input (< > << >>)     */
 /* ======================================================== */
 static int	parse_redir_type(const char *sym)
 {
@@ -29,8 +29,8 @@ static int	parse_redir_type(const char *sym)
 }
 
 /* ======================================================== */
-/*   Redirect-Linked-List erstellen                         */
-/*   Gibt bei Fehler alles frei und NULL zurück             */
+/*   Create redirect linked list                             */
+/*   On error: free everything and return NULL               */
 /* ======================================================== */
 static t_redirs	*build_redirs(int count, t_data *data)
 {
@@ -90,20 +90,92 @@ static t_redirs	*build_redirs(int count, t_data *data)
 	return (head);
 }
 
+/* ======================================================== */
+/*   Build argv from command name + raw argument string      */
+/*   - "0" => no arguments                                   */
+/*   - otherwise: ft_split(arg, ' ')                         */
+/* ======================================================== */
+static char **build_argv_from_input(const char *cmd, const char *arg)
+{
+    char    **argv;
+    char    **tokens;
+    size_t  i;
+    size_t  token_count;
 
-void *debug_build_commands(t_data *data)
+    /* special case: user enters "0" => no arguments */
+    if (strcmp(arg, "0") == 0)
+    {
+        argv = ft_calloc(2, sizeof(char *));
+        if (!argv)
+            return (NULL);
+        argv[0] = ft_strdup(cmd);
+        if (!argv[0])
+        {
+            free(argv);
+            return (NULL);
+        }
+        /* argv[1] is already NULL thanks to calloc */
+        return (argv);
+    }
+
+    /* split remaining line into argument tokens */
+    tokens = ft_split(arg, ' ');
+    if (!tokens)
+        return (NULL);
+
+    token_count = 0;
+    while (tokens[token_count])
+        token_count++;
+
+    /* cmd + all tokens + NULL */
+    argv = ft_calloc(token_count + 2, sizeof(char *));
+    if (!argv)
+    {
+        free_split(tokens);
+        return (NULL);
+    }
+
+    /* argv[0] = command name */
+    argv[0] = ft_strdup(cmd);
+    if (!argv[0])
+    {
+        free_split(argv);
+        free_split(tokens);
+        return (NULL);
+    }
+
+    /* argv[1..n] = split arguments */
+    i = 0;
+    while (i < token_count)
+    {
+        argv[i + 1] = ft_strdup(tokens[i]);
+        if (!argv[i + 1])
+        {
+            free_split(argv);
+            free_split(tokens);
+            return (NULL);
+        }
+        i++;
+    }
+    /* final NULL already provided by calloc */
+
+    free_split(tokens);
+    return (argv);
+}
+
+void    *debug_build_commands(t_data *data)
 {
     int     count;
     int     i;
     char    cmd[128];
     char    arg[128];
     int     redir_count;
-    t_cmds *node;
+    t_cmds  *node;
 
     printf("\n");
     printf("Number of Commands (0-9): ");
     if (scanf("%d", &count) != 1 || count <= 0)
-        return NULL;
+        return (NULL);
 
     i = 0;
     while (i < count)
@@ -115,16 +187,17 @@ void *debug_build_commands(t_data *data)
             data->list.tail = NULL;
             data->list.size = 0;
             data->cmd = NULL;
-            return NULL;
+            return (NULL);
         }
-        printf("Command %d — Argument ('0' = NULL): ", i + 1);
-        if (scanf("%127s", arg) != 1)
+
+        printf("Command %d — Arguments ('0' = NULL): ", i + 1);
+        if (scanf(" %127[^\n]", arg) != 1)
         {
             cmd_lstclear(&data->list.head);
             data->list.tail = NULL;
             data->list.size = 0;
             data->cmd = NULL;
-            return NULL;
+            return (NULL);
         }
 
         node = ft_calloc(1, sizeof(t_cmds));
@@ -134,9 +207,11 @@ void *debug_build_commands(t_data *data)
             data->list.tail = NULL;
             data->list.size = 0;
             data->cmd = NULL;
-            return NULL;
+            return (NULL);
         }
-        node->argv = ft_calloc(3, sizeof(char *));
+
+        /* >>> build dynamic argv here <<< */
+        node->argv = build_argv_from_input(cmd, arg);
         if (!node->argv)
         {
             free(node);
@@ -144,36 +219,8 @@ void *debug_build_commands(t_data *data)
             data->list.tail = NULL;
             data->list.size = 0;
             data->cmd = NULL;
-            return NULL;
+            return (NULL);
         }
-        node->argv[0] = ft_strdup(cmd);
-        if (!node->argv[0])
-        {
-            free_split(node->argv);
-            free(node);
-            cmd_lstclear(&data->list.head);
-            data->list.tail = NULL;
-            data->list.size = 0;
-            data->cmd = NULL;
-            return NULL;
-        }
-        if (strcmp(arg, "0") == 0)
-            node->argv[1] = NULL;
-        else
-        {
-            node->argv[1] = ft_strdup(arg);
-            if (!node->argv[1])
-            {
-                free_split(node->argv);
-                free(node);
-                cmd_lstclear(&data->list.head);
-                data->list.tail = NULL;
-                data->list.size = 0;
-                data->cmd = NULL;
-                return NULL;
-            }
-        }
-        node->argv[2] = NULL;
 
         printf("Command %d — Number of Redirects: ", i + 1);
         if (scanf("%d", &redir_count) != 1)
@@ -184,8 +231,9 @@ void *debug_build_commands(t_data *data)
             data->list.tail = NULL;
             data->list.size = 0;
             data->cmd = NULL;
-            return NULL;
+            return (NULL);
         }
+
         node->redirs = build_redirs(redir_count, data);
         if (redir_count > 0 && !node->redirs)
         {
@@ -195,10 +243,10 @@ void *debug_build_commands(t_data *data)
             data->list.tail = NULL;
             data->list.size = 0;
             data->cmd = NULL;
-            return NULL;
+            return (NULL);
         }
 
-        /* in data->list einhängen */
+        /* insert node into data->list */
         node->next = NULL;
         node->pipe_after = false;
         if (!data->list.head)
@@ -216,17 +264,14 @@ void *debug_build_commands(t_data *data)
         i++;
     }
 
-    /* Alias, damit dein Executor weiter mit data->cmd arbeiten kann */
+    /* alias so executor can continue using data->cmd */
     data->cmd = data->list.head;
-	return NULL; /* wird nie erreicht, nur für den Compiler */
+	return NULL; /* never reached, only to satisfy compiler */
 }
 
-
-
 /* ======================================================== */
-/*   VERBOSE: Print the entire command list structure       */
-
-
+/*   VERBOSE: Print the entire command list structure        */
+/* ======================================================== */
 
 static const char *redir_type_to_str(int type)
 {
@@ -240,7 +285,6 @@ static const char *redir_type_to_str(int type)
         return "REDIR_HEREDOC";
     return "UNKNOWN";
 }
-
 
 static void print_one_cmd(t_cmds *cmd, int idx)
 {
@@ -273,7 +317,7 @@ static void print_one_cmd(t_cmds *cmd, int idx)
         i++;
     }
     if (!cmd->redirs)
-        printf("  (no Redirections)\n");
+        printf("  (no redirections)\n");
 
     if (cmd->pipe_after)
         printf("\n  PIPE  ---> cmd %d\n", idx + 1);

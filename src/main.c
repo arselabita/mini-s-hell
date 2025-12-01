@@ -6,7 +6,7 @@
 /*   By: pjelinek <pjelinek@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 13:06:18 by netrunner         #+#    #+#             */
-/*   Updated: 2025/12/01 05:08:55 by pjelinek         ###   ########.fr       */
+/*   Updated: 2025/12/01 16:46:52 by pjelinek         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ int	main(int ac, char **av, char **envp)
 
 			//tokens = lexer(line);
 			//cmd = parser(tokens);
-			debug_build_commands(&data);
+			if (VERBOSE  || DEBUG_ALLOC)
+				debug_build_commands(&data);
 			print_cmd_list(data.list.head);
 
 			fprintf(stderr, "data_list_size: %i\n", data.list.size);
